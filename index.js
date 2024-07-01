@@ -4,9 +4,9 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 dotenv.config();
 const genAI = new GoogleGenerativeAI(process.env.API_KEY);
 
-async function run(promptbyuser) {
+async function run(promptbyuser,modelbyuser) {
   // For text-only input, use the gemini-pro model
-  const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+  const model = genAI.getGenerativeModel({ model: modelbyuser });
 
   const prompt = promptbyuser;
 
@@ -22,9 +22,10 @@ app.get('/', (req, res) => {
   res.send(`Hello ${name}!`);
 });
 
-app.post("/prompt", async (req, res) => {
+app.post("/prompt/:model", async (req, res) => {
+  const { model } = req.params;
   const { prompt } = req.body;
-  const response = await run(prompt);
+  const response = await run(prompt, model);
   res.send(response);
 })
 
